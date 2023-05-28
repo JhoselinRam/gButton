@@ -31,7 +31,7 @@ You can still use an external resistor if you preferred, but you must pass an ex
 
 As you can see, the wiring is much simpler using the internal pull-up.
 
-Then you must call the `begin()` method in the setup function and `update()` in the loop function.
+Then you must call the `begin()` method in the setup.
 
     #include "gButton.h"
 
@@ -40,18 +40,14 @@ Then you must call the `begin()` method in the setup function and `update()` in 
     void setup(){
       myButton.begin();
 
-      //... extra configurations
+      ... extra configurations
     }
 
     void loop(){
-      myButton.update();
-
-      //... your code
+      ... your code
     }
 
-The `begin()` method initialize the button and `update()` keeps track of the button state, updating its properties, the only thing left is for you to read the various states and functionalities available.
-
-> Note: The actual reading of the button is made in the `update()` method, that why you must call it inside the loop function, but also is recommended calling the method after any (long) delay() or inside a `for` or `while` loop if the button properties are read from inside that loop.
+The `begin()` method initialize the button to the correct configurations, the only thing left is for you to read the various states and functionalities available.
 
 ### down
 
@@ -166,8 +162,6 @@ Returns:
 If you call this method multiple times between each update(), only the first one or the one with the smallest argument will be able to return true, the others will always return false.
 
     void loop(){
-      myButton.update();
-
       if(myButton.multiClick(5))
       {...}
 
@@ -178,8 +172,6 @@ If you call this method multiple times between each update(), only the first one
 Will be equivalent to:
 
     void loop(){
-      myButton.update();
-
       if(myButton.multiClick(2))
       {...}
 
@@ -216,8 +208,6 @@ Returns:
 If you call this method multiple times between each update(), only the first one or the one with the smallest argument will be able to return true, the others will always return false.
 
     void loop(){
-      myButton.update();
-
       if(myButton.multiClickUp(5))
       {...}
 
@@ -228,8 +218,6 @@ If you call this method multiple times between each update(), only the first one
 Will be equivalent to:
 
     void loop(){
-      myButton.update();
-
       if(myButton.multiClickUp(2))
       {...}
 
@@ -292,55 +280,3 @@ Where:
 > The default value of the timeOut is `300ms`
 
 > To work properly, the `timeOut` must be greater than `debounceTime`.
-
-___
-
-## Handling multiple buttons
-
-You can create as many button objects as you wish, as long every one is initialized and updated properly, everything should run normally.
-
-The `gButton` class implements a couple of utility functions to handle the initialization and update of the buttons all at ones.
-
-For example, instead of:
-
-    #include "gButton.h"
-
-    gButton button_1(1), button_2(2), button_3(3);
-
-    void setup(){
-      button_1.begin();
-      button_2.begin();
-      button_3.begin();
-
-      ...
-    }
-
-    void loop(){
-      button_1.update();
-      button_2.update();
-      button_3.update();
-
-      ...
-    }
-
-You can write:
-
-    #include "gButton.h"
-
-    gButton button_1(1), button_2(2), button_3(3);
-
-    void setup(){
-      gButton::beginAll();
-
-      ...
-    }
-
-    void loop(){
-      gButton:updateAll();
-
-      ...
-    }
-
-The `beginAll()` and `updateAll()` functions will call the begin and update methods of all buttons, respectively.
-
-No extra configuration needed. The amount of buttons defined will be detected automatically.

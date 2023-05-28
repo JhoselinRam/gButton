@@ -20,11 +20,9 @@ void setup(){
 }
 
 void loop(){
- /*This method must be called at least ones in the loop function,
-  afther a long delay() or inside a user defined loop (for, while, do while)*/
-  button.update();
 
   bool activate;
+
 
   /*-------------------------------------------------------------------------
   Uncomment only the functionality that you want to test and comment the rest

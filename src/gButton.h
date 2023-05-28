@@ -11,7 +11,7 @@
 	
 	It makes no use of the delay() function and implements a debounce filter.
 	It can be used with the internal pin pull-up without extra configuration, simplifying
-	the wiring or, if preferred, can use an external resistor (10kOhm are suggested).
+	the wiring or, if preferred, can use an external resistor (10kOhm is suggested).
 
 	All times are in milliseconds.
 */
@@ -42,7 +42,6 @@ class gButton{
 	public:
 		gButton(uint8_t pinNumber, bool pullUp = true);
 		void begin();
-		void update();
 		bool down();	
 		bool up();
 		bool sustained();
@@ -55,9 +54,6 @@ class gButton{
 		uint16_t debounceTime();
 		void timeOut(uint16_t timeOut);
 		uint16_t timeOut();
-		
-		static void beginAll();
-		static void updateAll();
 
 	private:
 		uint8_t _pin;                 //Pin on the Arduino board in which the button will be connected to
@@ -70,14 +66,12 @@ class gButton{
 		unsigned long _lastUpTime;    //Time since the button was up
 		uint16_t _timeOut;            //Time between each click
 		
+		void _update();										//Utility function, used to update the button state
 		void _downCounter(unsigned long); //Utility function, used to keep the _downCount value
 		void _upCounter(unsigned long);   //Utility function, used to keep the _upCount value
 		void _set(uint8_t, bool);         //Utility function, used to set a specific state property
 		bool _get(uint8_t);               //Utility function, used to get a specific state property
 
-    static gButton** _addresBook;  //Array that stores a reference to all buttons 
-		static uint8_t _length;         //Number of objects stored in the address book
-		static void _addToAddressBook(gButton*);
 };
 
 #endif

@@ -11,7 +11,7 @@
 	
 	It makes no use of the delay() function and implements a debounce filter.
 	It can be used with the internal pin pull-up without extra configuration, simplifying
-	the wiring or, if preferred, can use an external resistor (10kOhm are suggested).
+	the wiring or, if preferred, can use an external resistor (10kOhm is suggested).
 
 	All times are in milliseconds.
 */
@@ -50,8 +50,6 @@ gButton::gButton(uint8_t pinNumber, bool pullUp){
     _upCount = 0;
     _downCount = 0;
     _set(BUTTON_USE_PULLUP, pullUp);   
-
-    _addToAddressBook(this);
 }                                                   
 
 //---------------------------------------------
@@ -76,15 +74,11 @@ void gButton::begin(){
 //---------------- Update ---------------------
 
 /*
-Update the timers and the button state.
-
-This method need to be called at least ones in the loop function, after any (long) 
-delay() or at the top of any user defined loop (for, while, do while) if the button 
-object is used inside that loop.
+Updates the timers and the button state.
 
 Returns: no returns.
 */
-void gButton::update(){
+void gButton::_update(){
 
     unsigned long currentTime = millis();
     _set(BUTTON_HAS_CHANGE, false);
@@ -101,18 +95,7 @@ void gButton::update(){
         //If a change occur update the corresponding state
         if (_get(BUTTON_CURRENT_STATE) != _get(BUTTON_LAST_STATE))
             _set(BUTTON_HAS_CHANGE, true); 
-
-        //If the button is pressed toogle the corresponding state
-        if(down())
-            _set(BUTTON_TOGGLE, !_get(BUTTON_TOGGLE));
-
-        //If the button is released toogle the corresponding state
-        if(up())
-            _set(BUTTON_TOGGLE_UP, !_get(BUTTON_TOGGLE_UP));
     }
-
-    _downCounter(currentTime); //Used to check if a multiple click occurs
-    _upCounter(currentTime);   //Used to check if a multiple up click occurs
 }
 
 //---------------------------------------------
@@ -188,6 +171,7 @@ Cheeks if the button has been pressed since the last time it was updated
 Returns: a boolean.
 */
 bool gButton::down(){
+    _update();
     return _get(BUTTON_HAS_CHANGE) && _get(BUTTON_CURRENT_STATE) && !_get(BUTTON_LAST_STATE);
 }
 
@@ -200,6 +184,7 @@ Cheeks if the button has been released since the last time it was updated.
 Returns: a boolean.
 */
 bool gButton::up(){
+    _update();
     return _get(BUTTON_HAS_CHANGE) && !_get(BUTTON_CURRENT_STATE) && _get(BUTTON_LAST_STATE);
 }
 
@@ -212,6 +197,7 @@ Cheeks if the button is being continually pressed.
 Return: a boolean.
 */
 bool gButton::sustained(){
+    _update();
     return _get(BUTTON_CURRENT_STATE);
 }
 
@@ -224,6 +210,7 @@ Cheeks whether the button have change status, passing from HIGH to LOW or vice v
 Return: a boolean.
 */
 bool gButton::change(){
+    _update();
     return _get(BUTTON_HAS_CHANGE);
 }
 
@@ -236,6 +223,8 @@ Toggles between true and false every time a down() call would return true
 Returns: a boolean.
 */
 bool gButton::toggle(){
+    if(down()) _set(BUTTON_TOGGLE, !_get(BUTTON_TOGGLE));
+    
     return _get(BUTTON_TOGGLE);
 }
 
@@ -248,6 +237,8 @@ Toggles between true and false every time a up() call would return true
 Returns: a boolean.
 */
 bool gButton::toggleUp(){
+    if(up()) _set(BUTTON_TOGGLE_UP, !_get(BUTTON_TOGGLE_UP));
+
     return _get(BUTTON_TOGGLE_UP);
 }
 
@@ -272,6 +263,9 @@ Note: If you call this method multiple times between each update(), only the fir
 'numberOfClicks' argument will be able to return true, the others will always return false.
 */
 bool gButton::multiClick(uint8_t numberOfClicks){
+    unsigned long currentTime = millis();
+    _downCounter(currentTime);
+
     //If the number of clicks is reached.
     if (_downCount == numberOfClicks){
         _downCount = 0; //Restart the counter             
@@ -302,6 +296,9 @@ Note: If you call this method multiple times between each update(), only the fir
 'numberOfClicks' argument will be able to return true, the others will always return false.
 */
 bool gButton::multiClickUp(uint8_t numberOfClicks){
+    unsigned long currentTime = millis();
+    _upCounter(currentTime);
+
     //If the number of releases is reached.
     if (_upCount == numberOfClicks){
         _upCount = 0; //Restart the counter             
@@ -389,63 +386,4 @@ Helpler function that get the state of the button
 */
 bool gButton::_get(uint8_t property){
     return bitRead(_state, property);
-}
-
-
-
-//---------------------------------------------
-//--------- Static implementations ------------
-
-
-//------------- Address Book ------------------
-
-/*
-keep a reference to all button objects
-*/
-gButton** gButton::_addresBook = new gButton*[1]; //Addres book initialized with one space
-
-/*
-Amount of objects stored in the address book
-*/
-uint8_t gButton::_length = 0;
-
-//---------------------------------------------
-//---------- Add To Address Book --------------
-
-void gButton::_addToAddressBook(gButton* newButton){
-    if(_length == 0){
-        _addresBook[0] = newButton;
-        _length++;
-        return;
-    }
-
-    _length++;
-    gButton** temporal = _addresBook;
-
-    _addresBook = new gButton*[_length];
-
-    for(uint8_t i=0; i<_length-1; i++)
-        _addresBook[i] = temporal[i];
-    
-    _addresBook[_length - 1] = newButton;
-
-    delete[] temporal;
-    temporal = 0;
-
-}
-
-//---------------------------------------------
-//-------------- Begin All --------------------
-
-void gButton::beginAll(){
-    for(uint8_t i=0; i<_length; i++)
-        _addresBook[i]->begin();
-}
-
-//---------------------------------------------
-//------------- Update All --------------------
-
-void gButton::updateAll(){
-    for(uint8_t i=0; i<_length; i++)
-        _addresBook[i]->update();
 }

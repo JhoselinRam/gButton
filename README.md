@@ -23,7 +23,7 @@ Here you declare a button connected to `D3` on the Arduino board, and here is th
 ##### How is this possible?
 
 This library make use of the underrated internal pull-up resistors present in the pins, making the wiring simpler.
-You can still use an external resistor if you preferred, buy you must pass an extra argument to the constructor telling that you don't want to use the internal pull-up.
+You can still use an external resistor if you preferred, but you must pass an extra argument to the constructor telling that you don't want to use the internal pull-up.
 
     gButton myButton(3, false);
 

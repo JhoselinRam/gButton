@@ -256,9 +256,9 @@ bool gButton::toggleUp(){
 
 /*
 This method will return true if you press the button 'numberOfClicks' times 
-consecutively with 'timeBetweenClicks' milliseconds between each press. 
+consecutively with 'timeOut' milliseconds between each press. 
 	  
-timeBetweenClicks has a default value of 300ms.
+timeOut has a default value of 300ms.
 
 multiClick( numberOfClicks )
 
@@ -286,9 +286,9 @@ bool gButton::multiClick(uint8_t numberOfClicks){
 
 /*
 This method will return true if you release the button 'numberOfClicks' times 
-consecutively with 'timeBetweenClicks' milliseconds between each press. 
+consecutively with 'timeOut' milliseconds between each press. 
 	  
-timeBetweenClicks has a default value of 300ms.
+timeOut has a default value of 300ms.
 
 multiClickUp( numberOfClicks )
 

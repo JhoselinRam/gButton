@@ -1,0 +1,22 @@
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+gButton KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+begin KEYWORD2
+update  KEYWORD2
+down  KEYWORD2
+up  KEYWORD2
+sustained KEYWORD2
+change  KEYWORD2
+toggle  KEYWORD2
+toggleUp  KEYWORD2
+multiClick  KEYWORD2
+multiClickUp  KEYWORD2
+debounceTime  KEYWORD2
+timeOut KEYWORD2
+beginAll  KEYWORD2
+updateAll KEYWORD2

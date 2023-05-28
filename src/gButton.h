@@ -2,7 +2,7 @@
 	gButton class
 
 	Author: Jhoselin Adrian Ramirez Montes
-	Version: 2.0.0
+	Version: 1.0.0
 	Contact: jhoselin.ramirez92@gmail.com
 
 	Description: This class provides an easy way to work with buttons and other momentary
